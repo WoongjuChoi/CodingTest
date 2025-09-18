@@ -1,80 +1,90 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include <queue>
 
 using namespace std;
 
-void DFS(int startNode, vector<priority_queue<int, vector<int>, greater<int>>>& graph, vector<bool>& visitedDFS);
-void BFS(int startNode, vector<priority_queue<int, vector<int>, greater<int>>>& graph, vector<bool>& visitedBFS);
+static vector<bool> visitCheck;
+
+void DFS(int node, const vector<vector<int>>& graph)
+{
+	cout << node << " ";
+	visitCheck[node] = true;
+
+	for (int i = 0; i < graph[node].size(); ++i)
+	{
+		if (visitCheck[graph[node][i]])
+			continue;
+
+		DFS(graph[node][i], graph);
+	}
+}
+
+void BFS(int node, const vector<vector<int>>& graph)
+{
+	queue<int> visitQueue;
+
+	visitQueue.push(node);
+
+	while (visitQueue.empty() == false)
+	{
+		int curNode = visitQueue.front();
+		visitQueue.pop();
+
+		if (visitCheck[curNode])
+			continue;
+
+		cout << curNode << " ";
+		visitCheck[curNode] = true;
+
+		for (int i = 0; i < graph[curNode].size(); ++i)
+		{
+			if (visitCheck[graph[curNode][i]])
+				continue;
+
+			visitQueue.push(graph[curNode][i]);
+		}
+	}
+}
 
 int main()
 {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
 
-    int N, M, V;
-    cin >> N >> M >> V;
+	int N = 0;
+	int M = 0;
+	int V = 0;
 
-    vector<priority_queue<int, vector<int>, greater<int>>> graphDFS(N + 1);
-    vector<priority_queue<int, vector<int>, greater<int>>> graphBFS(N + 1);
-    int node1, node2;
-    for (int i = 0; i < M; ++i)
-    {
-        cin >> node1 >> node2;
-        graphDFS[node1].push(node2);
-        graphDFS[node2].push(node1);
-        graphBFS[node1].push(node2);
-        graphBFS[node2].push(node1);
-    }
+	cin >> N;
+	cin >> M;
+	cin >> V;
 
-    vector<bool> visitedDFS(N + 1, false);
-    DFS(V, graphDFS, visitedDFS);
-    cout << '\n';
-    vector<bool> visitedBFS(N + 1, false);
-    BFS(V, graphBFS, visitedBFS);
-}
+	visitCheck.resize(N + 1, false);
 
-void DFS(int startNode, vector<priority_queue<int, vector<int>, greater<int>>>& graph, vector<bool>& visitedDFS)
-{
-    visitedDFS[startNode] = true;
-    cout << startNode << ' ';
+	vector<vector<int>> graph(N + 1);
+	for (int i = 0; i < M; ++i)
+	{
+		int start, end;
+		cin >> start >> end;
 
-    while (graph[startNode].empty() == false)
-    {
-        if (visitedDFS[graph[startNode].top()] == false) 
-        {
-            DFS(graph[startNode].top(), graph, visitedDFS);
-        }
+		graph[start].push_back(end);
+		graph[end].push_back(start);
+	}
 
-        graph[startNode].pop();
-    }
-}
+	for (int i = 1; i <= N; ++i)
+	{
+		sort(graph[i].begin(), graph[i].end());
+	}
 
-void BFS(int startNode, vector<priority_queue<int, vector<int>, greater<int>>>& graph, vector<bool>& visitedBFS)
-{
-    queue<int> bfs;
-    bfs.push(startNode);
+	fill(visitCheck.begin(), visitCheck.end(), false);
 
-    while (bfs.empty() == false)
-    {
-        int visitNode = bfs.front();
-        bfs.pop();
+	DFS(V, graph);
+	cout << endl;
 
-        if (visitedBFS[visitNode])
-            continue;
+	fill(visitCheck.begin(), visitCheck.end(), false);
 
-        visitedBFS[visitNode] = true;
-        cout << visitNode << ' ';
-
-        while (graph[visitNode].empty() == false)
-        {
-            if (visitedBFS[graph[visitNode].top()] == false)
-            {
-                bfs.push(graph[visitNode].top());
-            }
-
-            graph[visitNode].pop();
-        }
-    }
+	BFS(V, graph);
 }
