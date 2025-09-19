@@ -39,5 +39,8 @@
     <ClCompile Include="잃어버린괄호.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="집합의표현.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
