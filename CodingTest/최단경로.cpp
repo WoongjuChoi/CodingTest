@@ -27,7 +27,7 @@ int main()
     {
         int startNode, endNode, weight;
         cin >> startNode >> endNode >> weight;
-        graph[startNode].push_back(make_pair(endNode, weight));
+        graph[startNode].emplace_back(make_pair(endNode, weight));
     }
 
     vector<int> shortestRoute(V + 1);
@@ -36,7 +36,7 @@ int main()
 
     vector<bool> visited(V + 1, false);
     priority_queue<pair<int, int>, vector<pair<int, int>>, ComparePairBySecond> visitQueue;
-    visitQueue.push(make_pair(K, 0));
+    visitQueue.emplace(make_pair(K, 0));
 
     while (visitQueue.empty() == false)
     {
@@ -54,7 +54,7 @@ int main()
             int edgeWeight = graph[curNode.first][i].second;
 
             shortestRoute[nextNode] = min(shortestRoute[nextNode], shortestRoute[curNode.first] + edgeWeight);
-            visitQueue.push(make_pair(nextNode, shortestRoute[nextNode]));
+            visitQueue.emplace(make_pair(nextNode, shortestRoute[nextNode]));
         }
     }
 
